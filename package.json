@@ -1,0 +1,11 @@
+{
+  "name": "prj3-graphql-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:kjonathante/prj3-graphql-server.git",
+  "author": "Kit Jonathan Te <kjonathante@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "graphql-yoga": "^1.16.2"
+  }
+}
