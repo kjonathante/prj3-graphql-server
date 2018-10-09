@@ -1,5 +1,7 @@
 var uuid = require("uuid/v4");
-var GraphQLServer = require("graphql-yoga").GraphQLServer;
+var graphqlyoga = require("graphql-yoga"),
+  GraphQLServer = graphqlyoga.GraphQLServer,
+  PubSub = graphqlyoga.PubSub;
 
 var books = [
   {
@@ -19,15 +21,25 @@ var resolvers = {
   },
 
   Mutation: {
-    add: function(root, args) {
+    add: function(root, args, context) {
       var book = {
         id: uuid(),
         description: args.description
       };
       books.push(book);
+      context.pubsub.publish("test", { bookAdded: book });
       return book;
     }
+  },
+
+  Subscription: {
+    bookAdded: {
+      subscribe: function(root, args, context) {
+        return context.pubsub.asyncIterator("test");
+      }
+    }
   }
+
   // Can be omitted
   // Book: {
   //   id: function(root) {
@@ -39,9 +51,11 @@ var resolvers = {
   // }
 };
 
+var pubsub = new PubSub();
 var server = new GraphQLServer({
   typeDefs: "./src/schema.graphql",
-  resolvers: resolvers
+  resolvers: resolvers,
+  context: { pubsub }
 });
 
 server.start(function() {
