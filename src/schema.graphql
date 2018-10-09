@@ -11,3 +11,7 @@ type Book {
   id: ID!
   description: String!
 }
+
+type Subscription {
+  bookAdded: Book
+}
