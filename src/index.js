@@ -1,31 +1,12 @@
+var uuid = require("uuid/v4");
 var GraphQLServer = require("graphql-yoga").GraphQLServer;
 
 var books = [
   {
     id: "adsfewrz",
     description: "This is book1"
-  },
-  {
-    id: "aasdewrr",
-    description: "This is book2"
-  },
-  {
-    id: "arteywwr",
-    description: "This is book3"
   }
 ];
-
-var typeDefs = `
-type Query {
-  info: String!
-  books: [Book]!
-}
-
-type Book {
-  id: ID!
-  description: String!
-}
-`;
 
 var resolvers = {
   Query: {
@@ -37,6 +18,16 @@ var resolvers = {
     }
   },
 
+  Mutation: {
+    add: function(root, args) {
+      var book = {
+        id: uuid(),
+        description: args.description
+      };
+      books.push(book);
+      return book;
+    }
+  }
   // Can be omitted
   // Book: {
   //   id: function(root) {
@@ -49,7 +40,7 @@ var resolvers = {
 };
 
 var server = new GraphQLServer({
-  typeDefs: typeDefs,
+  typeDefs: "./src/schema.graphql",
   resolvers: resolvers
 });
 
