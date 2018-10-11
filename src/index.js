@@ -1,63 +1,51 @@
-var uuid = require("uuid/v4");
 var graphqlyoga = require("graphql-yoga"),
   GraphQLServer = graphqlyoga.GraphQLServer,
   PubSub = graphqlyoga.PubSub;
-var booksModel = require("./books.model");
+
+var Query = require("./resolvers/Query");
+var Mutation = require("./resolvers/Mutation");
+var AuthPayload = require("./resolvers/AuthPayload");
+var Subscription = require("./resolvers/Subscription");
 
 var mongojs = require("mongojs");
 var db = mongojs("prj3_db", ["books"]);
+db.users.createIndex({ email: 1 }, { unique: true });
 
-// var books = [
-//   {
-//     id: "adsfewrz",
-//     description: "This is book1"
+// var resolvers = {
+//   Query: {
+//     info: function() {
+//       return "Hello World";
+//     },
+//     books: async function(root, args, context) {
+//       return await booksModel.users(context.db);
+//     }
+//   },
+
+//   Mutation: {
+//     add: async function(root, args, context) {
+
+//       var book = await booksModel.create(context.db, {
+//         description: args.description
+//       });
+//       context.pubsub.publish("test", { bookAdded: book });
+//       return book;
+//     }
+//   },
+
+//   Subscription: {
+//     bookAdded: {
+//       subscribe: function(root, args, context) {
+//         return context.pubsub.asyncIterator("test");
+//       }
+//     }
 //   }
-// ];
+// };
 
 var resolvers = {
-  Query: {
-    info: function() {
-      return "Hello World";
-    },
-    books: async function(root, args, context) {
-      // return books;
-      return await booksModel.users(context.db);
-    }
-  },
-
-  Mutation: {
-    add: async function(root, args, context) {
-      // var book = {
-      //   id: uuid(),
-      //   description: args.description
-      // };
-      // books.push(book);
-
-      var book = await booksModel.create(context.db, {
-        description: args.description
-      });
-      context.pubsub.publish("test", { bookAdded: book });
-      return book;
-    }
-  },
-
-  Subscription: {
-    bookAdded: {
-      subscribe: function(root, args, context) {
-        return context.pubsub.asyncIterator("test");
-      }
-    }
-  }
-
-  // Can be omitted
-  // Book: {
-  //   id: function(root) {
-  //     return root.id;
-  //   },
-  //   description: function(root) {
-  //     return root.description;
-  //   },
-  // }
+  Query: Query,
+  Mutation: Mutation,
+  AuthPayload: AuthPayload,
+  Subscription: Subscription
 };
 
 var pubsub = new PubSub();

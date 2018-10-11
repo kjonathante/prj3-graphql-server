@@ -1,6 +1,6 @@
-function create(db, book) {
+function create(db, args) {
   return new Promise(function(resolve, reject) {
-    db.books.insert(book, function(error, value) {
+    db.books.insert(args.data, function(error, value) {
       if (error) {
         return reject(error);
       }
@@ -9,7 +9,7 @@ function create(db, book) {
   });
 }
 
-function users(db) {
+function books(db) {
   return new Promise(function(resolve, reject) {
     db.books.find({}, function(error, value) {
       if (error) {
@@ -20,7 +20,8 @@ function users(db) {
   });
 }
 
+
 module.exports = {
   create: create,
-  users: users,
+  books: books
 };
