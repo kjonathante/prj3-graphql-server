@@ -11,8 +11,8 @@ function create(db, args) {
 
 function createBook(db, args) {
   return new Promise(function(resolve, reject) {
-    console.log(args.query)
-    console.log(args.data)
+    console.log(args.query);
+    console.log(args.data);
     db.users.update(args.query, args.data, function(error, value) {
       if (error) {
         return reject(error);
@@ -21,7 +21,6 @@ function createBook(db, args) {
     });
   });
 }
-
 
 function user(db, args) {
   return new Promise(function(resolve, reject) {
