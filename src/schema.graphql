@@ -1,10 +1,23 @@
 type Query {
   info: String!
-  books: [Book]!
+  books: [Book!]!
 }
 
 type Mutation {
-  add(description: String!): Book!
+  createBook(description: String!): Book!
+  signup(email: String!, password: String!, name: String!): AuthPayload
+  login(email: String!, password: String!): AuthPayload
+}
+
+type Subscription {
+  bookAdded: Book
+}
+
+type User {
+  _id: ID!
+  email: String!
+  name: String!
+  books: [Book!]!
 }
 
 type Book {
@@ -12,6 +25,7 @@ type Book {
   description: String!
 }
 
-type Subscription {
-  bookAdded: Book
+type AuthPayload {
+  token: String
+  user: User
 }
